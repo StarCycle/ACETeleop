@@ -86,6 +86,7 @@ class Sim:
         # add robot asset
         robot_asset_root = Path(ace_teleop.__path__[0]) / "assets"
         robot_asset_file = cfg["urdf_path"]
+
         asset_options = self.get_asset_options()
         self.sphere = self.gym.create_sphere(self.sim, 0.008, asset_options)
 

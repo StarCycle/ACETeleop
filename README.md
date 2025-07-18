@@ -134,6 +134,8 @@ We provide the code for controlling robots in simulation. You can easily use the
 ```python
 # Install isaacgym if you want to run the sim example.
 python scripts/teleop_sim.py --config h1_inspire
+# You can use sapien instead, but h1_inspire has too many joints for sapien. You can use xarm_ability.
+python scripts/teleop_sim.py --config xarm_ability
 ```
 
 <p id="calibration"></p>
