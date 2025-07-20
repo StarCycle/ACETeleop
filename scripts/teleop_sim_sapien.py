@@ -113,7 +113,7 @@ class Sim:
 
     def set_dof_properties(self) -> None:
         for joint in self.robot.get_active_joints():
-            joint.set_drive_property(stiffness=1000.0, damping=1000.0)
+            joint.set_drive_property(stiffness=5000.0, damping=2000.0)
 
     def add_actors(self) -> None:
         self.head_axis = self.axis_builder.build(kinematic=True, name="head")
