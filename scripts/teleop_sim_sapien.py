@@ -64,7 +64,7 @@ class Sim:
         self.viewer = Viewer(self.render)
         self.viewer.set_scene(self.scene)
         self.viewer.set_camera_xyz(1, 1, 2)
-        self.viewer.set_camera_rpy(0, -math.atan(1 / math.sqrt(2)), math.pi / 4)
+        self.viewer.set_camera_rpy(0, -math.pi / 4, math.pi)
 
         # add ground plane
         self.scene.add_ground(0.0)
@@ -155,7 +155,8 @@ class Sim:
             start = time.time()
 
         # Set robot DOF targets
-        self.robot.set_drive_target(cmd)
+        # self.robot.set_drive_target(cmd)
+        self.robot.set_qpos(cmd) # similar to issac gym code
 
         # Step the physics
         self.scene.step()
@@ -259,7 +260,6 @@ def main() -> None:
                 simulator.step(cmd, np2tensor(latest, simulator.device))
             else:
                 cmd = teleoperator.step()
-                print(cmd)
                 simulator.step(cmd)
     except KeyboardInterrupt:
         simulator.end()
