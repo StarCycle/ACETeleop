@@ -29,7 +29,8 @@ if __name__ == "__main__":
             'gr1_gripper_mirror',
             'franka_gripper',
             'franka_gripper_mirror',
-            'single_demo'
+            'single_demo',
+            'ur10e'
         ],
         default="h1_inspire",
     )

@@ -15,6 +15,8 @@ setup(
     install_requires=[
         "numpy",
         "pin",
+        "pin-pink",
+        "meshcat-shapes",
         "nlopt",
         "avp_stream",
         "dex_retargeting==0.1.1",
