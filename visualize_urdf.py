@@ -44,6 +44,6 @@ if __name__ == '__main__':
     urdf_path = "/home/agilex/ACETeleop/ace_teleop/assets/ur10e/ur10e_with_gripper.urdf"
     model = pin.buildModelFromUrdf(urdf_path)
     print("Joint Names and Indices:")
-    for i, joint in enumerate(model.names):  # 跳过universe
+    for i, joint in enumerate(model.names[1:]):  # 跳过universe
         print(f"Index {i}: Joint {joint}")
     visualize_urdf(urdf_path)
