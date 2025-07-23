@@ -101,4 +101,18 @@ PORT_CONFIG_MAP = {
         joint_signs=(-1, -1, -1, -1, -1, -1),
         gripper_config=None,
     ),
+    "/dev/serial/by-id/usb-FTDI_USB__-__Serial_Converter_FTA9DPE9-if00-port0": DynamixelRobotConfig(
+    joint_ids=(1, 2, 3, 4, 5, 6),  # 与其他配置一致，电机ID为1-6
+    joint_offsets=(
+        0 * np.pi / 2,    # 第一个关节偏移
+        3 * np.pi / 2,    # 第二个关节偏移
+        2 * np.pi / 2,    # 第三个关节偏移
+        1 * np.pi / 2,    # 第四个关节偏移
+        2 * np.pi / 2,    # 第五个关节偏移
+        3 * np.pi / 2    # 第六个关节偏移（注意负号）
+    ),
+    joint_signs=(-1, -1, -1, -1, -1, -1),  # 与其他配置一致，均为-1
+    gripper_config=None,  # 保留默认
+    is_ACE=True  # 默认为True，无需修改
+    ),
 }

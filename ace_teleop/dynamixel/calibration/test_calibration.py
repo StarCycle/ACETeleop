@@ -3,10 +3,9 @@ from typing import List, Dict, Tuple
 
 import matplotlib
 import numpy as np
-import sapien
+import sapien.core as sapien
 import transforms3d
 from pathlib import Path
-from sapien import internal_renderer as R
 from sapien.utils import Viewer
 
 from ace_teleop.server.dynamixel_agent import DynamixelAgent
@@ -56,56 +55,115 @@ def parse_args():
     return parser.parse_args()
 
 
+def create_cone_mesh(slices=16):
+    vertices = np.zeros((slices + 1, 3), dtype=np.float32)
+    vertices[0] = [1, 0, 0]  # tip
+    for i in range(slices):
+        theta = 2 * np.pi * i / slices
+        vertices[i + 1] = [0, np.cos(theta), np.sin(theta)]
+    triangles = np.zeros((slices, 3), dtype=np.uint32)
+    for i in range(slices):
+        triangles[i] = [0, i + 1, (i + 1) % slices + 1]
+    return vertices, triangles
+
+
 class ContactViewer(Viewer):
     def __init__(
         self,
-        renderer: sapien.render.SapienRenderer,
+        renderer,
         shader_dir="",
-        resolutions=(1024, 768),
     ):
-        super().__init__(renderer, shader_dir, resolutions)
+        super().__init__(renderer)
 
         # Contact arrow
-        self.contact_nodes = []
-        self.capsule = self.renderer_context.create_capsule_mesh(0.1, 0.5, 16, 4)
-        self.cone = self.renderer_context.create_cone_mesh(16)
+        self.contact_actors = []
+        self.highlighted_actors = []
+        self.cone_vertices, self.cone_triangles = create_cone_mesh(16)
 
         # Material to highlight contact geom
-        self.contact_collision_mat = sapien.render.RenderMaterial()
+        self.contact_collision_mat = renderer.create_material()
         self.contact_collision_mat.base_color = np.array([1, 0, 0, 1])
 
-        self.highlighted_visual_body: List[sapien.render.RenderBodyComponent] = []
+        self.scene = None
+        self.renderer = renderer
+
+    def set_scene(self, scene):
+        super().set_scene(scene)
+        self.scene = scene
 
     def draw_contact(self):
-        # Clear contact arrow in the previous step
-        for i in range(len(self.contact_nodes)):
-            node = self.contact_nodes.pop()
-            self.system._internal_scene.remove_node(node)
+        # Clear contact arrows and highlights from the previous step
+        for actor in self.contact_actors:
+            self.scene.remove_actor(actor)
+        self.contact_actors.clear()
 
-        # Remove previous collision visual shape
-        for visual_body in self.highlighted_visual_body:
-            entity = visual_body.get_entity()
-            entity.remove_component(visual_body)
-        self.highlighted_visual_body.clear()
+        for actor in self.highlighted_actors:
+            self.scene.remove_actor(actor)
+        self.highlighted_actors.clear()
 
         # Fetch the contact information for current step
         contact_list, actor_geom_map = self.fetch_contact()
 
         # Draw collision visual shape
-        for rigid_body, geom_list in actor_geom_map.items():
-            entity = rigid_body.get_entity()
-            for c in entity.get_components():
-                if isinstance(c, sapien.render.RenderBodyComponent):
-                    # Turn ff collision mesh if it is in show_collision mode
-                    if c.name == "Collision":
-                        c.disable()
-                    # Turn on visual mesh if it is in show_collision mode
-                    else:
-                        c.enable()
-            contact_shape = self.build_collision_visual_shape(geom_list)
-            entity.add_component(contact_shape)
-            contact_shape.set_property("shadeFlat", 1)
-            self.highlighted_visual_body.append(contact_shape)
+        for actor, geom_list in actor_geom_map.items():
+            builder = self.scene.create_actor_builder()
+            for collision_shape in geom_list:
+                shape_type = collision_shape.type
+                shape_pose = collision_shape.pose
+                if shape_type == 'sphere':
+                    data = collision_shape.get_geometric_shape_data()
+                    builder.add_sphere_visual(
+                        radius=data['radius'],
+                        material=self.contact_collision_mat,
+                        pose=shape_pose,
+                    )
+                elif shape_type == 'box':
+                    data = collision_shape.get_geometric_shape_data()
+                    builder.add_box_visual(
+                        half_size=data['half_sizes'],
+                        material=self.contact_collision_mat,
+                        pose=shape_pose,
+                    )
+                elif shape_type == 'capsule':
+                    data = collision_shape.get_geometric_shape_data()
+                    builder.add_capsule_visual(
+                        radius=data['radius'],
+                        half_length=data['half_length'],
+                        material=self.contact_collision_mat,
+                        pose=shape_pose,
+                    )
+                elif shape_type == 'convex_mesh' or shape_type == 'nonconvex_mesh':
+                    vertices = collision_shape.get_vertices()
+                    triangles = collision_shape.get_triangles()
+                    scale = collision_shape.get_scale()
+                    builder.add_visual_mesh(
+                        vertices,
+                        triangles,
+                        material=self.contact_collision_mat,
+                        pose=shape_pose,
+                        scale=scale,
+                    )
+                elif shape_type == 'plane':
+                    builder.add_plane_visual(
+                        scale=[1e4, 1e4],
+                        material=self.contact_collision_mat,
+                        pose=shape_pose,
+                    )
+                elif shape_type == 'cylinder':
+                    data = collision_shape.get_geometric_shape_data()
+                    builder.add_cylinder_visual(
+                        radius=data['radius'],
+                        half_length=data['half_length'],
+                        material=self.contact_collision_mat,
+                        pose=shape_pose,
+                    )
+                else:
+                    raise Exception("invalid collision shape, this code should be unreachable.")
+            highlight_actor = builder.build_kinematic(name="contact_highlight")
+            highlight_actor.set_pose(actor.get_pose())
+            for rb in highlight_actor.get_render_bodies():
+                rb.shade_flat = True
+            self.highlighted_actors.append(highlight_actor)
 
         # Draw contact arrow
         for pos, normal, color in contact_list:
@@ -116,14 +174,14 @@ class ContactViewer(Viewer):
     ) -> Tuple[
         List,
         Dict[
-            sapien.physx.PhysxRigidBaseComponent, List[sapien.physx.PhysxCollisionShape]
+            sapien.Actor, List[sapien.CollisionShape]
         ],
     ]:
         min_impulse = 0.1
         max_impulse = 10
         contact_list = []
 
-        body_geom_map = {}
+        actor_geom_map = {}
         for contact in self.scene.get_contacts():
             impulse = np.array([p.impulse for p in contact.points])
             total_impulse = np.linalg.norm(np.sum(impulse, axis=0))
@@ -142,25 +200,24 @@ class ContactViewer(Viewer):
                 )
                 color = np.array(COLOR_MAP(norm_impulse))
                 contact_list.append((position, np.sum(impulse, axis=0), color))
-                body0, body1 = contact.components[0:2]
+                actor0, actor1 = contact.actor1, contact.actor2
                 print(
-                    f"Find self collision: {body0.get_name(), body1.get_name()},"
+                    f"Find self collision: {actor0.name, actor1.name},"
                     f" impulse: {total_impulse}, position: {position}"
                 )
 
-                for actor, shape in zip(
-                    [body0, body1], [contact.shapes[0], contact.shapes[1]]
+                for act, shape in zip(
+                    [actor0, actor1], [contact.collision_shape1, contact.collision_shape2]
                 ):
-                    if actor in body_geom_map:
-                        body_geom_map[actor].append(shape)
+                    if act in actor_geom_map:
+                        actor_geom_map[act].append(shape)
                     else:
-                        body_geom_map[actor] = [shape]
+                        actor_geom_map[act] = [shape]
 
-        return contact_list, body_geom_map
+        return contact_list, actor_geom_map
 
     @staticmethod
     def compute_rotation_from_normal(normal: np.ndarray):
-        # Ref: https://math.stackexchange.com/questions/1956699/getting-a-transformation-matrix-from-a-normal-vector
         normal = normal / np.linalg.norm(normal)
         x, y, z = normal
         if np.isclose(z, 1.0):
@@ -178,103 +235,46 @@ class ContactViewer(Viewer):
     def draw_contact_arrow(
         self, pos: np.ndarray, normal: np.ndarray, color: np.ndarray
     ):
-        render_scene: R.Scene = self.system._internal_scene
+        builder = self.scene.create_actor_builder()
+        material = self.renderer.create_material()
+        material.emission = [1, 0, 0, 0]
+        material.base_color = color
+        material.specular = 0
+        material.roughness = 0.8
+        material.metallic = 0
 
-        material = self.renderer_context.create_material([1, 0, 0, 0], color, 0, 0.8, 0)
-        cone = self.renderer_context.create_model([self.cone], [material])
-        capsule = self.renderer_context.create_model([self.capsule], [material])
-        contact_node = render_scene.add_node()
-        obj = render_scene.add_object(cone, contact_node)
-        obj.set_scale([0.5, 0.2, 0.2])
-        obj.set_position([1, 0, 0])
-        obj.shading_mode = 0
-        obj.cast_shadow = False
-        obj.transparency = 0
+        # Shaft (capsule)
+        shaft_radius = 0.1 * 0.05
+        shaft_half_length = 0.5 * 0.05
+        shaft_pose = sapien.Pose([0.5 * 0.05, 0, 0])
+        builder.add_capsule_visual(
+            radius=shaft_radius,
+            half_length=shaft_half_length,
+            material=material,
+            pose=shaft_pose,
+        )
 
-        obj = render_scene.add_object(capsule, contact_node)
-        obj.set_position([0.5, 0, 0])
-        obj.shading_mode = 0
-        obj.cast_shadow = False
-        obj.transparency = 0
+        # Head (cone)
+        cone_pose = sapien.Pose([1 * 0.05, 0, 0])
+        cone_scale = [0.5 * 0.05, 0.2 * 0.05, 0.2 * 0.05]
+        builder.add_visual_mesh(
+            self.cone_vertices,
+            self.cone_triangles,
+            material=material,
+            pose=cone_pose,
+            scale=cone_scale,
+        )
 
-        contact_node.set_position(pos)
-        contact_node.set_rotation(self.compute_rotation_from_normal(normal))
-        contact_node.set_scale([0.05, 0.05, 0.05])
-        self.contact_nodes.append(contact_node)
-
-    def build_collision_visual_shape(
-        self,
-        collision_shape_list: List[sapien.physx.PhysxCollisionShape],
-    ) -> sapien.render.RenderBodyComponent:
-        new_visual = sapien.render.RenderBodyComponent()
-        new_visual.disable_render_id()
-        new_visual.name = "ContactShape"
-
-        for collision_shape in collision_shape_list:
-            if isinstance(collision_shape, sapien.physx.PhysxCollisionShapeSphere):
-                vs = sapien.render.RenderShapeSphere(
-                    collision_shape.radius, self.contact_collision_mat
-                )
-
-            elif isinstance(collision_shape, sapien.physx.PhysxCollisionShapeBox):
-                vs = sapien.render.RenderShapeBox(
-                    collision_shape.half_size, self.contact_collision_mat
-                )
-
-            elif isinstance(collision_shape, sapien.physx.PhysxCollisionShapeCapsule):
-                vs = sapien.render.RenderShapeCapsule(
-                    collision_shape.radius,
-                    collision_shape.half_length,
-                    self.contact_collision_mat,
-                )
-
-            elif isinstance(
-                collision_shape, sapien.physx.PhysxCollisionShapeConvexMesh
-            ):
-                vs = sapien.render.RenderShapeTriangleMesh(
-                    collision_shape.vertices,
-                    collision_shape.triangles,
-                    np.zeros((0, 3)),
-                    self.contact_collision_mat,
-                )
-                vs.scale = collision_shape.scale
-
-            elif isinstance(
-                collision_shape, sapien.physx.PhysxCollisionShapeTriangleMesh
-            ):
-                vs = sapien.render.RenderShapeTriangleMesh(
-                    collision_shape.vertices,
-                    collision_shape.triangles,
-                    np.zeros((0, 3)),
-                    self.contact_collision_mat,
-                )
-                vs.scale = collision_shape.scale
-
-            elif isinstance(collision_shape, sapien.physx.PhysxCollisionShapePlane):
-                vs = sapien.render.RenderShapePlane(
-                    [1, 1e4, 1e4], self.contact_collision_mat
-                )
-
-            elif isinstance(collision_shape, sapien.physx.PhysxCollisionShapeCylinder):
-                vs = sapien.render.RenderShapeCylinder(
-                    collision_shape.radius,
-                    collision_shape.half_length,
-                    self.contact_collision_mat,
-                )
-
-            else:
-                raise Exception(
-                    "invalid collision shape, this code should be unreachable."
-                )
-
-            vs.local_pose = collision_shape.local_pose
-            new_visual.attach(vs)
-        # new_visual.set_property("shadeFlat", 1)
-        return new_visual
+        contact_actor = builder.build_kinematic(name="contact_arrow")
+        contact_actor.set_pose(sapien.Pose(pos, self.compute_rotation_from_normal(normal)))
+        for rb in contact_actor.get_render_bodies():
+            rb.shade_flat = True
+            rb.cast_shadow = False
+        self.contact_actors.append(contact_actor)
 
 
 def generate_joint_limit_trajectory(
-    robot: sapien.physx.PhysxArticulation, loop_steps: int
+    robot: sapien.Articulation, loop_steps: int
 ):
     joint_limits = robot.get_qlimits()
     for index, joint in enumerate(robot.get_active_joints()):
@@ -303,29 +303,24 @@ def generate_joint_limit_trajectory(
 def visualize_urdf(
     use_rt, simulate, disable_self_collision, fix_root, port, agent_type
 ):
-    # Generate rendering config
-    if not use_rt:
-        sapien.render.set_viewer_shader_dir("default")
-        sapien.render.set_camera_shader_dir("default")
-    else:
-        sapien.render.set_viewer_shader_dir("rt")
-        sapien.render.set_camera_shader_dir("rt")
-        sapien.render.set_ray_tracing_samples_per_pixel(1024)
-        sapien.render.set_ray_tracing_path_depth(16)
-        sapien.render.set_ray_tracing_denoiser("oidn")
+    # No ray tracing in Sapien 2.2, but we can set shader for rt if available
+    if use_rt:
+        sapien.render_config.camera_shader_dir = "rt"
+        sapien.render_config.viewer_shader_dir = "rt"
+        sapien.render_config.rt_samples_per_pixel = 64
+        sapien.render_config.rt_use_denoiser = True
 
     # Setup
     engine = sapien.Engine()
-    renderer = sapien.render.SapienRenderer()
+    renderer = sapien.SapienRenderer()
     engine.set_renderer(renderer)
     config = sapien.SceneConfig()
-    config.enable_tgs = True
     config.gravity = np.array([0, 0, 0])
     scene = engine.create_scene(config=config)
     scene.set_timestep(1 / 125)
 
     # Ground
-    render_mat = sapien.render.RenderMaterial()
+    render_mat = renderer.create_material()
     render_mat.base_color = [0.06, 0.08, 0.12, 1]
     render_mat.metallic = 0.0
     render_mat.roughness = 0.9
@@ -342,10 +337,10 @@ def visualize_urdf(
     # Viewer
     viewer = ContactViewer(renderer)
     viewer.set_scene(scene)
-    viewer.control_window.set_camera_xyz(0.5, 0, 0.5)
-    viewer.control_window.set_camera_rpy(0, -0.8, 3.14)
-    viewer.control_window.show_origin_frame = False
-    viewer.control_window.move_speed = 0.01
+    viewer.set_camera_xyz(0.5, 0, 0.5)
+    viewer.set_camera_rpy(0, -0.8, 3.14)
+    # viewer.window.show_origin_frame = False  # No such attribute in 2.2, perhaps
+    # viewer.window.move_speed = 0.01  # Assuming similar
 
     # Articulation
     loader = scene.create_urdf_loader()
@@ -359,11 +354,7 @@ def visualize_urdf(
     urdf_path = str(
         Path(__file__).resolve().parent.parent / "urdf" / Path(urdf_paths[agent_type])
     )
-    robot_builder = loader.load_file_as_articulation_builder(urdf_path)
-    if disable_self_collision and not simulate:
-        for link_builder in robot_builder.get_link_builders():
-            link_builder.set_collision_groups(1, 1, 17, 0)
-    robot: sapien.physx.PhysxArticulation = robot_builder.build(fix_root_link=fix_root)
+    robot = loader.load(urdf_path)
 
     # Robot motion
     loop_steps = 600
@@ -392,7 +383,7 @@ def visualize_urdf(
             qpos = trajectory[step]
             for joint, single_qpos in zip(robot.get_active_joints(), qpos):
                 joint.set_drive_target(single_qpos)
-            robot.set_qf(robot.compute_passive_force())
+            robot.set_qf(robot.compute_passive_force(gravity=True, coriolis_and_centrifugal=True, external=False))
             step += 1
             step = step % loop_steps
 

@@ -178,8 +178,6 @@ After getting the offset, go to `ace_teleop/dynamixel/calibration/config.py` and
 After calibration, you can test the result with the following command. You should see the ACE hardware in the real world behave the same way as it does in the simulation.
 
 ```python
-# Note: test_calibration requires sapien==3.0.0b0, which may conflict with dex_retargeting==0.1.1.
-# It's recommended to create a separate environment to avoid potential errors.
 python -m ace_teleop.dynamixel.calibration.test_calibration --port /dev/serial/by-id/usb-FTDI_USB__-__Serial_Converter_FT8J0QI3-if00-port0 --type left
 ```
 
