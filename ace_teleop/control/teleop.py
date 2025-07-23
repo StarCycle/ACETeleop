@@ -19,11 +19,12 @@ class ACETeleop:
     def __init__(self, cfg: Dict[str, Any], ip: str, debug: bool = False):
         self.streamer = AVPStreamer(ip=ip)
         self.controller = ACEController(cfg)
-
         self.debug = debug
 
-        self.left_arm_indices: List[int] = cfg["left_arm_indices"]
-        self.right_arm_indices: List[int] = cfg["right_arm_indices"]
+        if self.controller.enable_agent["left"]:
+            self.left_arm_indices: List[int] = cfg["left_arm_indices"]
+        if self.controller.enable_agent["right"]:
+            self.right_arm_indices: List[int] = cfg["right_arm_indices"]
 
     def step(self) -> Tuple[List[float], Any]:
         data = decode_msg(self.streamer.latest)

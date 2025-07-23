@@ -27,34 +27,37 @@ class KeyboardServer(Server):
 
     def on_press(self, key):
         # Left hand
-        if key == KeyCode(char='w'):
-            self.cur_ee_pos["left"][1] += self.dx
-        if key == KeyCode(char='a'):
-            self.cur_ee_pos["left"][0] -= self.dx
-        if key == KeyCode(char='s'):
-            self.cur_ee_pos["left"][1] -= self.dx
-        if key == KeyCode(char='d'):
-            self.cur_ee_pos["left"][0] += self.dx
+        if self.enable_agent["left"]:
+            if key == KeyCode(char='w'):
+                self.cur_ee_pos["left"][1] += self.dx
+            if key == KeyCode(char='a'):
+                self.cur_ee_pos["left"][0] -= self.dx
+            if key == KeyCode(char='s'):
+                self.cur_ee_pos["left"][1] -= self.dx
+            if key == KeyCode(char='d'):
+                self.cur_ee_pos["left"][0] += self.dx
         
         # Right hand
-        if key == Key.up:
-            self.cur_ee_pos["right"][1] += self.dx
-        if key == Key.left:
-            self.cur_ee_pos["right"][0] -= self.dx
-        if key == Key.down:
-            self.cur_ee_pos["right"][1] -= self.dx
-        if key == Key.right:
-            self.cur_ee_pos["right"][0] += self.dx
+        if self.enable_agent["right"]:
+            if key == Key.up:
+                self.cur_ee_pos["right"][1] += self.dx
+            if key == Key.left:
+                self.cur_ee_pos["right"][0] -= self.dx
+            if key == Key.down:
+                self.cur_ee_pos["right"][1] -= self.dx
+            if key == Key.right:
+                self.cur_ee_pos["right"][0] += self.dx
 
     def run(self) -> None:
         while True:
             for name in ["left", "right"]:
-                self.wrist[name][:3, 3] = self.cur_ee_pos[name]
-                self.wrist[name][:3, :3] = self.cur_ee_rot[name]
+                if self.enable_agent[name]:
+                    self.wrist[name][:3, 3] = self.cur_ee_pos[name]
+                    self.wrist[name][:3, :3] = self.cur_ee_rot[name]
 
-                if self.is_ACE:
-                    self.wrist[name] = np.dot(R_z_90_ccw_pose, self.wrist[name])
-                self.wrist[name] = np.dot(YUP2ZUP_INV_2D, self.wrist[name])
+                    if self.is_ACE:
+                        self.wrist[name] = np.dot(R_z_90_ccw_pose, self.wrist[name])
+                    self.wrist[name] = np.dot(YUP2ZUP_INV_2D, self.wrist[name])
 
             self.servicer.points_right[:] = self.cur_finger_joint_pos["right"]
             self.servicer.points_left[:] = self.cur_finger_joint_pos["left"]

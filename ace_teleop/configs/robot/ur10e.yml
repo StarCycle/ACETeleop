@@ -4,16 +4,11 @@ robot_cfg:
 
   dof_num: 7
 
-  left_arm_indices: []
-  left_arm_init: []
-
   right_arm_indices: [0, 1, 2, 3, 4, 5]  # Indices for right arm joints: positions 1 to 6 for UR10 arm joints
   right_arm_init: [0.0, 0.0, 1.57, 0.0, -1.57, 0.7]
 
   ee_type: "gripper"
   gripper_type: "1dof"
-  left_ee: flange
-  left_ee_indices: []
   right_ee: flange
   right_ee_indices: [6]
 
@@ -28,7 +23,5 @@ robot_cfg:
     out_lp_alpha: 0.5  # Alpha value for low-pass filter on output
 
   ee:  # Configuration for end-effector
-    left_ee:  # Left end-effector settings
-      gripper_range: [0.0, 0.0]
     right_ee:  # Right end-effector settings
       gripper_range: [0.0, 0.9]

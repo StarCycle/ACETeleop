@@ -64,7 +64,7 @@ class Sim:
         self.viewer = Viewer(self.render)
         self.viewer.set_scene(self.scene)
         self.viewer.set_camera_xyz(1, 1, 2)
-        self.viewer.set_camera_rpy(0, -math.pi / 4, math.pi)
+        self.viewer.set_camera_rpy(0, 0, 0.7*math.pi)
 
         # add ground plane
         self.scene.add_ground(0.0)

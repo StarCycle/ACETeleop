@@ -41,6 +41,10 @@ class ACEController:
         self.dof = cfg["dof_num"]
         self._qpos = np.zeros(self.dof)
         self.cfg = cfg
+
+        self.enable_agent = {}
+        for name in ["left", "right"]:
+            self.enable_agent[name] = name+'_ee' in self.cfg
         
         self._init_indices()
         self._init_controllers()
@@ -49,17 +53,19 @@ class ACEController:
 
     def _init_indices(self) -> None:
         self.human_hand_indices = self.cfg["human_hand_indices"]
-        self.left_arm_indices = self.cfg["left_arm_indices"]
-        self.right_arm_indices = self.cfg["right_arm_indices"]
-        self.left_ee_indices = self.cfg["left_ee_indices"]
-        self.right_ee_indices = self.cfg["right_ee_indices"]
+        if self.enable_agent["left"]:
+            self.left_arm_indices = self.cfg["left_arm_indices"]
+            self.left_ee_indices = self.cfg["left_ee_indices"]
+        if self.enable_agent["right"]:
+            self.right_arm_indices = self.cfg["right_arm_indices"]
+            self.right_ee_indices = self.cfg["right_ee_indices"]
 
     def _init_controllers(self) -> None:
         self.ee_type = self.cfg["ee_type"]
         urdf_path = self.default_urdf_dir / Path(self.cfg["urdf_path"])
         arm_config = self.cfg["arm"]
 
-        if self.cfg["left_ee"] != [] and self.cfg["left_arm_init"] != []:
+        if self.enable_agent["left"]:
             self.left_ee_controller = PinocchioMotionControl(
                 urdf_path,
                 self.cfg["left_ee"],
@@ -67,7 +73,7 @@ class ACEController:
                 arm_config,
                 arm_indices=self.left_arm_indices,
             )
-        if self.cfg["right_ee"] != [] and self.cfg["right_arm_init"] != []:
+        if self.enable_agent["right"]:
             self.right_ee_controller = PinocchioMotionControl(
                 urdf_path,
                 self.cfg["right_ee"],
@@ -88,31 +94,34 @@ class ACEController:
         wrist_alpha = self.cfg["wrist_low_pass_alpha"]
         ee_alpha = self.cfg["hand_low_pass_alpha"]
 
-        self.left_wrist_pos_filter = LPFilter(wrist_alpha)
-        self.left_wrist_rot_filter = LPRotationFilter(wrist_alpha)
-        self.right_wrist_pos_filter = LPFilter(wrist_alpha)
-        self.right_wrist_rot_filter = LPRotationFilter(wrist_alpha)
-
-        self.left_fingertip_pos_filter = LPFilter(ee_alpha)
-        self.right_fingertip_pos_filter = LPFilter(ee_alpha)
+        if self.enable_agent["left"]:
+            self.left_wrist_pos_filter = LPFilter(wrist_alpha)
+            self.left_wrist_rot_filter = LPRotationFilter(wrist_alpha)
+            self.left_fingertip_pos_filter = LPFilter(ee_alpha)
+        if self.enable_agent["right"]:
+            self.right_wrist_pos_filter = LPFilter(wrist_alpha)
+            self.right_wrist_rot_filter = LPRotationFilter(wrist_alpha)
+            self.right_fingertip_pos_filter = LPFilter(ee_alpha)
 
     def _init_hand_controllers(self) -> None:
         ee_config = self.cfg["ee"]
 
         RetargetingConfig.set_default_urdf_dir(self.default_urdf_dir)
 
-        if "left_ee" in ee_config:
+        if self.enable_agent["left"]:
             left_config = RetargetingConfig.from_dict(ee_config["left_ee"])
             self.left_retargeting = left_config.build()
 
-        if "right_ee" in ee_config:
+        if self.enable_agent["right"]:
             right_config = RetargetingConfig.from_dict(ee_config["right_ee"])
             self.right_retargeting = right_config.build()
 
     def _init_gripper(self) -> None:
         ee_config = self.cfg["ee"]
-        self.left_gripper_range = ee_config["left_ee"]["gripper_range"]
-        self.right_gripper_range = ee_config["right_ee"]["gripper_range"]
+        if self.enable_agent["left"]:
+            self.left_gripper_range = ee_config["left_ee"]["gripper_range"]
+        if self.enable_agent["right"]:
+            self.right_gripper_range = ee_config["right_ee"]["gripper_range"]
         self.gripper_type = self.cfg["gripper_type"]
 
     def update(
@@ -125,7 +134,7 @@ class ACEController:
         if not self.configured:
             raise ValueError("ACE controller has not been configured.")
 
-        if hasattr(self, "left_ee_controller"):
+        if self.enable_agent["left"]:
             left_wrist = wrist_filters(
                 left_wrist, self.left_wrist_pos_filter, self.left_wrist_rot_filter
             )
@@ -146,7 +155,7 @@ class ACEController:
             self._qpos[self.left_arm_indices] = left_arm_qpos
             self._qpos[self.left_ee_indices] = left_ee_qpos
 
-        if hasattr(self, "right_ee_controller"):
+        if self.enable_agent["right"]:
             right_wrist = wrist_filters(
                 right_wrist, self.right_wrist_pos_filter, self.right_wrist_rot_filter
             )
