@@ -113,7 +113,7 @@ class Sim:
 
     def set_dof_properties(self) -> None:
         for joint in self.robot.get_active_joints():
-            joint.set_drive_property(stiffness=5000.0, damping=2000.0)
+            joint.set_drive_property(stiffness=10000.0, damping=10000.0)
 
     def add_actors(self) -> None:
         self.head_axis = self.axis_builder.build(kinematic=True, name="head")
@@ -240,7 +240,7 @@ def main() -> None:
     parser.add_argument(
         "--config",
         "-c",
-        choices=["h1_inspire", "xarm_ability", "gr1", "franka", "ur10e"],
+        choices=["h1_inspire", "xarm_ability", "gr1", "franka", "ur10e", "ur10e_hand"],
         default="h1_inspire",
     )
     parser.add_argument("--ip", default="localhost")

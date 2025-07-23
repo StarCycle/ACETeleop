@@ -21,8 +21,12 @@ def visualize_urdf(urdf_path):
     if not robot:
         raise ValueError(f"Failed to load URDF from {urdf_path}")
     robot.set_pose(sapien.Pose([0, 0, 0]))
-    qpos = np.array([0.0, -np.pi/2, 0.0, -np.pi/2, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])  # 示例：肩部和肘部弯曲90度
-    robot.set_qpos(qpos)
+
+    # 打印Sapien中的关节顺序（活动关节）
+    print("Joint Names and Indices in Sapien:")
+    active_joints = robot.get_active_joints()
+    for i, joint in enumerate(active_joints):
+        print(f"Index {i}: Joint {joint.get_name()}")
     
     # 创建查看器
     viewer = Viewer(renderer)  # 传入渲染器而非Scene
@@ -41,9 +45,9 @@ def visualize_urdf(urdf_path):
         viewer.render()
 
 if __name__ == '__main__':
-    urdf_path = "/home/agilex/ACETeleop/ace_teleop/assets/ur10e/ur10e_with_gripper.urdf"
+    urdf_path = "/home/starcycle/ACETeleop/ace_teleop/assets/ur10e/ur10e_with_right_dexrobot_hand.urdf"
     model = pin.buildModelFromUrdf(urdf_path)
-    print("Joint Names and Indices:")
-    for i, joint in enumerate(model.names):  # 跳过universe
+    print("Joint Names and Indices in Pinocchio:")
+    for i, joint in enumerate(model.names[1:]):  # 跳过universe
         print(f"Index {i}: Joint {joint}")
     visualize_urdf(urdf_path)

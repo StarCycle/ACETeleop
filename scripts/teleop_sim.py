@@ -331,7 +331,7 @@ def main() -> None:
     parser.add_argument(
         "--config",
         "-c",
-        choices=["h1_inspire", "xarm_ability", "gr1", "franka"],
+        choices=["h1_inspire", "xarm_ability", "gr1", "franka", "ur10e", "ur10e_hand"],
         default="h1_inspire",
     )
     parser.add_argument("--ip", default="localhost")

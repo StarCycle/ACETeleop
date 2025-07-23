@@ -1,0 +1,47 @@
+robot_cfg:
+  name: ur10e_hand
+  urdf_path: ur10e/ur10e_with_right_dexrobot_hand.urdf 
+
+  dof_num: 26
+
+  left_arm_indices: []
+  left_arm_init: []
+
+  right_arm_indices: [0, 1, 2, 3, 4, 5]  # Indices for right arm joints: positions 1 to 6 for UR10 arm joints
+  right_arm_init: [0.0, 0.0, 1.57, 0.0, -1.57, 0.7]
+
+  ee_type: "hand"
+  left_ee: flange
+  left_ee_indices: []
+  right_ee: flange
+  right_ee_indices: [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25]
+
+  hand_indices: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+  human_hand_indices: [4, 9, 14, 19, 24]
+  hand_low_pass_alpha: 0.8
+  wrist_low_pass_alpha: 0.5
+
+  arm:  # Configuration for arm inverse kinematics (IK) parameters
+    dt: 1e-1  # Time step for IK velocity integration
+    eps: 1e-4  # Convergence threshold for IK error
+    damp: 1e-12  # Damping factor for IK regularization
+    out_lp_alpha: 0.5  # Alpha value for low-pass filter on output
+
+  ee:  # Configuration for end-effector
+    right_ee:  # Right end-effector settings
+      type: vector
+      urdf_path: dexrobot_hand/dexhand021_right_simplified.urdf
+      wrist_link_name: "right_hand_base"
+
+      # Target refers to the retargeting target, which is the robot hand
+      target_joint_names: null # Set it to null so that the target_joint_names are automatically inferred from the urdf (all active joints)
+      target_origin_link_names: [ "right_hand_base", "right_hand_base", "right_hand_base", "right_hand_base", "right_hand_base" ] # Starting point of vector
+      target_task_link_names: [ "r_f_link1_tip", "r_f_link2_tip", "r_f_link3_tip", "r_f_link4_tip", "r_f_link4_tip" ] # End point of vector
+      scaling_factor: 1.25 # Size ratio between the inspire hand and the human hand
+
+      # Source refers to the retargeting input, which usually corresponds to the human hand
+      # The joint indices of human hand joint which corresponds to each link in the target_link_names
+      target_link_human_indices: [ [ 0, 0, 0, 0, 0 ], [ 4, 9, 14, 19, 24 ] ] # Vision Pro id of starting points and end points of vectors
+
+      # A smaller alpha means stronger filtering, i.e. more smooth but also larger latency
+      low_pass_alpha: 0.5

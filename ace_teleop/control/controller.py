@@ -101,11 +101,13 @@ class ACEController:
 
         RetargetingConfig.set_default_urdf_dir(self.default_urdf_dir)
 
-        left_config = RetargetingConfig.from_dict(ee_config["left_ee"])
-        self.left_retargeting = left_config.build()
+        if "left_ee" in ee_config:
+            left_config = RetargetingConfig.from_dict(ee_config["left_ee"])
+            self.left_retargeting = left_config.build()
 
-        right_config = RetargetingConfig.from_dict(ee_config["right_ee"])
-        self.right_retargeting = right_config.build()
+        if "right_ee" in ee_config:
+            right_config = RetargetingConfig.from_dict(ee_config["right_ee"])
+            self.right_retargeting = right_config.build()
 
     def _init_gripper(self) -> None:
         ee_config = self.cfg["ee"]

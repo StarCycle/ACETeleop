@@ -30,7 +30,8 @@ if __name__ == "__main__":
             'franka_gripper',
             'franka_gripper_mirror',
             'single_demo',
-            'ur10e'
+            'ur10e',
+            'ur10e_hand',
         ],
         default="h1_inspire",
     )
