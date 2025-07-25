@@ -310,8 +310,6 @@ class ACEServer(Server):
                         self.radius_l[name],
                     )
 
-                    self.wrist[name][2, 3] = np.clip(self.wrist[name][2, 3], 0, 0.3)
-
                     #! need to fix
                     if (not self.initialized or not self.start) or (
                         self.warming_step < self.warming
