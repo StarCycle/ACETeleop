@@ -5,7 +5,7 @@ robot_cfg:
   dof_num: 26
 
   right_arm_indices: [0, 1, 2, 3, 4, 5]  # Indices for right arm joints: positions 1 to 6 for UR10 arm joints
-  right_arm_init: [0.0, 0.0, 1.57, 0.0, -1.57, 0.7]
+  right_arm_init: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
   ee_type: "hand"
   right_ee: flange

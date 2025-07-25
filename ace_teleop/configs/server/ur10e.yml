@@ -23,9 +23,9 @@ robot_cfg:  # Configuration for the robot setup
 
   right_agent:
     dynamixel_cfg:
-      port: /dev/serial/by-id/usb-FTDI_USB__-__Serial_Converter_FT8ISG7I-if00-port0
+      port: /dev/serial/by-id/usb-FTDI_USB__-__Serial_Converter_FTA9DPE9-if00-port0
       urdf: right_arm/robot.urdf
       ee_link_name: ee_c
     hand_cfg:
-      cam_num: 2
+      cam_num: 0
       hand_type: Right

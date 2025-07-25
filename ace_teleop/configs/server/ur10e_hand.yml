@@ -5,10 +5,10 @@ robot_cfg:  # Configuration for the robot setup
 
   mode: normal  # Operation mode: "normal" for standard teleoperation (or "mirror" for mirrored mode)
 
-  pos_scale: 1.5
-  roll_scale: 2.0
-  pitch_scale: 2.0
-  yaw_scale: 2.0
+  pos_scale: 2.0
+  roll_scale: 1.0
+  pitch_scale: 1.0
+  yaw_scale: 1.0
 
   roll_limit: [-3, 3]
   pitch_limit: [-3, 3]
@@ -16,16 +16,16 @@ robot_cfg:  # Configuration for the robot setup
   roll_offset: 0
 
   right_wrist:
-    right_wrist_init_rot: [[ 0,  0,  -1], [ -1,  0,  0], [ 0,  1,  0]]
-    right_wrist_init_pos: [0.5, 0.3, 0.3]
-    right_center: [0.5, 0.3, 0.3]
-    right_radius: 0.3
+    right_wrist_init_rot: [[ 0,  -1,  0], [ 1,  0,  0], [ 0,  0,  1]]
+    right_wrist_init_pos: [-0.2, 0.5, 0.3]
+    right_center: [-0.2, 0.5, 0.3]
+    right_radius: 10000.0
 
   right_agent:
     dynamixel_cfg:
-      port: /dev/serial/by-id/usb-FTDI_USB__-__Serial_Converter_FT8ISG7I-if00-port0
+      port: /dev/serial/by-id/usb-FTDI_USB__-__Serial_Converter_FTA9DPE9-if00-port0
       urdf: right_arm/robot.urdf
       ee_link_name: ee_c
     hand_cfg:
-      cam_num: 0
+      cam_num: 1
       hand_type: Right
