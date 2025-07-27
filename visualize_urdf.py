@@ -26,7 +26,7 @@ def visualize_urdf(urdf_path):
     print("Joint Names and Indices in Sapien:")
     active_joints = robot.get_active_joints()
     for i, joint in enumerate(active_joints):
-        print(f"Index {i}: Joint {joint.get_name()}")
+        print(f"Index {i}: Joint {joint.get_name()}, angle {robot.get_qpos()[i]}")
     
     # 创建查看器
     viewer = Viewer(renderer)  # 传入渲染器而非Scene
@@ -45,7 +45,9 @@ def visualize_urdf(urdf_path):
         viewer.render()
 
 if __name__ == '__main__':
-    urdf_path = "/home/starcycle/ACETeleop/ace_teleop/assets/ur10e/ur10e_with_right_dexrobot_hand.urdf"
+    # urdf_path = "/home/starcycle/ACETeleop/ace_teleop/assets/ur10e/ur10e_with_right_dexrobot_hand.urdf"
+    # urdf_path = "/home/user/rongkui/ACETeleop/ace_teleop/assets/xarm7_ability/xarm7_ability_right_hand.urdf"
+    urdf_path = "/home/user/rongkui/ACETeleop/ace_teleop/assets/xarm7_ability/xarm7_ability.urdf"
     model = pin.buildModelFromUrdf(urdf_path)
     print("Joint Names and Indices in Pinocchio:")
     for i, joint in enumerate(model.names[1:]):  # 跳过universe

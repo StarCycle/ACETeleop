@@ -2,6 +2,7 @@
 from pynput.keyboard import Key, Listener, KeyCode
 import numpy as np
 import time
+from scipy.spatial.transform import Rotation as R
 
 from ace_teleop.configs.server.ace_const import *
 from ace_teleop.server.server import Server
@@ -54,9 +55,6 @@ class KeyboardServer(Server):
                 if self.enable_agent[name]:
                     self.wrist[name][:3, 3] = self.cur_ee_pos[name]
                     self.wrist[name][:3, :3] = self.cur_ee_rot[name]
-
-                    if self.is_ACE:
-                        self.wrist[name] = np.dot(R_z_90_ccw_pose, self.wrist[name])
                     self.wrist[name] = np.dot(YUP2ZUP_INV_2D, self.wrist[name])
 
             self.servicer.points_right[:] = self.cur_finger_joint_pos["right"]

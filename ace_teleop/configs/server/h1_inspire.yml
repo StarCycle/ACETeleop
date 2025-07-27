@@ -17,13 +17,15 @@ robot_cfg:
   roll_offset: 20
 
   left_wrist:
-    left_wrist_init_rot: [[ 0,  0, -1], [ 1,  0,  0], [ 0,  -1,  0]] 
-    left_wrist_init_pos: [-0.320, 0.1, 0.145]
+    # Note: the end effector frame may look weird, and be different in the 2 arms, check your urdf!
+    # e.g., the x axis of the left arm EE points to inside of the flange, while the x axis of the right arm EE points to outside of the flange
+    left_wrist_init_rot: [0, 0, 0] # Euler angles (x->y->z) of the end effector (specified in robot config) in the coordinate frame of the first link
+    left_wrist_init_pos: [-0.320, 0.1, 0.145] # Position of the end effector in the coordinate frame of the first link
     left_center: [-0.33, 0.05, 0.45]
-    left_radius: 0.5
+    left_radius: 0.5 # Center and radius of the constraint sphere, any position out of the sphere will be clipped
 
   right_wrist:
-    right_wrist_init_rot: [[ 0,  0,  -1], [ -1,  0,  0], [ 0,  1,  0]]
+    right_wrist_init_rot: [0, 0, 0]
     right_wrist_init_pos: [0.320, 0.1, 0.145]
     right_center: [0.33, 0.05, 0.45]
     right_radius: 0.5

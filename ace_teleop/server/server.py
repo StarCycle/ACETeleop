@@ -1,6 +1,7 @@
 from concurrent import futures
 import grpc
 import numpy as np
+from scipy.spatial.transform import Rotation as R
 
 from ace_teleop.configs.server.ace_const import *
 from ace_teleop.stream.streamer import HandTrackingServicer, handtracking_pb2_grpc
@@ -52,7 +53,7 @@ class Server:
         for name in ["left", "right"]:
             if self.enable_agent[name]:
                 wrist_cfg = self.cfg[f"{name}_wrist"]
-                self.wrist_init_rot[name] = wrist_cfg[f"{name}_wrist_init_rot"]
+                self.wrist_init_rot[name] = R.from_euler('xyz', wrist_cfg[f"{name}_wrist_init_rot"]).as_matrix()
                 self.wrist_init_pos[name] = wrist_cfg[f"{name}_wrist_init_pos"]
                 self.center_l[name] = wrist_cfg[f"{name}_center"]
                 self.radius_l[name] = wrist_cfg[f"{name}_radius"]

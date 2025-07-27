@@ -323,9 +323,6 @@ class ACEServer(Server):
                             self.warming_step += 1
                             print(f"Warming:{self.warming_step/self.warming:.2f}")
 
-                    if self.is_ACE:
-                        self.wrist[name] = np.dot(R_z_90_ccw_pose, self.wrist[name])
-
                     self.wrist[name] = np.dot(YUP2ZUP_INV_2D, self.wrist[name])
 
                     if name == "left":

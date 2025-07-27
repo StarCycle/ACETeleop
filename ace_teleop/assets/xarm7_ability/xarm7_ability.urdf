@@ -240,13 +240,13 @@
     <visual name="wrist_mesh">
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="ability_hand/meshes/visual/wristmesh.obj"/>
+        <mesh filename="../ability_hand/meshes/visual/wristmesh.obj"/>
       </geometry>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="ability_hand/meshes/collision/wristmesh_C.obj"/>
+        <mesh filename="../ability_hand/meshes/collision/wristmesh_C.obj"/>
       </geometry>
     </collision>
     <inertial>  <!-- the mass and inertia here are NOT correct -->
@@ -269,13 +269,13 @@
     <visual name="palm_mesh">
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="ability_hand/meshes/visual/FB_palm_ref.obj"/>
+        <mesh filename="../ability_hand/meshes/visual/FB_palm_ref.obj"/>
       </geometry>
     </visual>
     <collision>                                  <!-- thumb_base -->
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="ability_hand/meshes/collision/FB_palm_ref.obj"/>
+        <mesh filename="../ability_hand/meshes/collision/FB_palm_ref.obj"/>
       </geometry>
     </collision>
   </link>
@@ -288,13 +288,13 @@
     <visual name="thumb_mesh_1">
       <origin xyz="27.8283501e-3 0 -14.7507000e-3" rpy="4.450589592585541 0 0"/>
       <geometry>
-        <mesh filename="ability_hand/meshes/visual/thumb-F1.obj"/>
+        <mesh filename="../ability_hand/meshes/visual/thumb-F1.obj"/>
       </geometry>
     </visual>
     <collision>                            <!-- thumb_L1 -->
       <origin xyz="27.8283501e-3 0 -14.7507000e-3" rpy="4.450589592585541 0 0"/>
       <geometry>
-        <mesh filename="ability_hand/meshes/collision/thumb-F1_C.obj"/>
+        <mesh filename="../ability_hand/meshes/collision/thumb-F1_C.obj"/>
       </geometry>
     </collision>
   </link>
@@ -307,13 +307,13 @@
     <visual name="thumb_mesh_2">
       <origin xyz="65.18669e-3 23.34021e-3 -3.93483e-3" rpy="3.141592 0 0.343830"/>
       <geometry>
-        <mesh filename="ability_hand/meshes/visual/thumb-F2.obj"/>
+        <mesh filename="../ability_hand/meshes/visual/thumb-F2.obj"/>
       </geometry>
     </visual>
     <collision>                            <!-- thumb_L2 -->
       <origin xyz="65.18669e-3 23.34021e-3 -3.93483e-3" rpy="3.141592 0 0.343830"/>
       <geometry>
-        <mesh filename="ability_hand/meshes/collision/thumb-F2_C.obj"/>
+        <mesh filename="../ability_hand/meshes/collision/thumb-F2_C.obj"/>
       </geometry>
     </collision>
   </link>
@@ -348,7 +348,7 @@
     <visual name="index_mesh_1">
       <origin xyz="38.472723e-3 3.257695e-3 0.000000" rpy="0 0 0.084474"/>
       <geometry>
-        <mesh filename="ability_hand/meshes/visual/idx-F1.obj"/>
+        <mesh filename="../ability_hand/meshes/visual/idx-F1.obj"/>
       </geometry>
     </visual>
     <collision>                                  <!-- index_L1 -->
@@ -391,13 +391,13 @@
     <visual name="index_mesh_2">
       <origin rpy="0 0 0" xyz="9.1241e-3 0 0"/>
       <geometry>
-        <mesh filename="ability_hand/meshes/visual/idx-F2.obj"/>
+        <mesh filename="../ability_hand/meshes/visual/idx-F2.obj"/>
       </geometry>
     </visual>
     <collision>                            <!-- index_L2 -->
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="ability_hand/meshes/collision/idx-F2_C.obj"/>
+        <mesh filename="../ability_hand/meshes/collision/idx-F2_C.obj"/>
       </geometry>
     </collision>
     <collision>
@@ -439,7 +439,7 @@
     <visual name="middle_mesh_1">
       <origin xyz="38.472723e-3 3.257695e-3 0.000000" rpy="0 0 0.084474"/>
       <geometry>
-        <mesh filename="ability_hand/meshes/visual/idx-F1.obj"/>
+        <mesh filename="../ability_hand/meshes/visual/idx-F1.obj"/>
       </geometry>
     </visual>
     <collision>                                  <!-- middle_L1 -->
@@ -482,13 +482,13 @@
     <visual name="middle_mesh_2">
       <origin rpy="0 0 0" xyz="9.1241e-3 0 0"/>
       <geometry>
-        <mesh filename="ability_hand/meshes/visual/idx-F2.obj"/>
+        <mesh filename="../ability_hand/meshes/visual/idx-F2.obj"/>
       </geometry>
     </visual>
     <collision>                            <!-- middle_L2 -->
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="ability_hand/meshes/collision/idx-F2_C.obj"/>
+        <mesh filename="../ability_hand/meshes/collision/idx-F2_C.obj"/>
       </geometry>
     </collision>
     <collision>
@@ -530,7 +530,7 @@
     <visual name="ring_mesh_1">
       <origin xyz="38.472723e-3 3.257695e-3 0.000000" rpy="0 0 0.084474"/>
       <geometry>
-        <mesh filename="ability_hand/meshes/visual/idx-F1.obj"/>
+        <mesh filename="../ability_hand/meshes/visual/idx-F1.obj"/>
       </geometry>
     </visual>
     <collision>                                  <!-- ring_L1 -->
@@ -573,13 +573,13 @@
     <visual name="ring_mesh_2">
       <origin rpy="0 0 0" xyz="9.1241e-3 0 0"/>
       <geometry>
-        <mesh filename="ability_hand/meshes/visual/idx-F2.obj"/>
+        <mesh filename="../ability_hand/meshes/visual/idx-F2.obj"/>
       </geometry>
     </visual>
     <collision>                            <!-- ring_L2 -->
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="ability_hand/meshes/collision/idx-F2_C.obj"/>
+        <mesh filename="../ability_hand/meshes/collision/idx-F2_C.obj"/>
       </geometry>
     </collision>
     <collision>
@@ -621,7 +621,7 @@
     <visual name="pinky_mesh_1">
       <origin xyz="38.472723e-3 3.257695e-3 0.000000" rpy="0 0 0.084474"/>
       <geometry>
-        <mesh filename="ability_hand/meshes/visual/idx-F1.obj"/>
+        <mesh filename="../ability_hand/meshes/visual/idx-F1.obj"/>
       </geometry>
     </visual>
     <collision>                                  <!-- pinky_L1 -->
@@ -664,13 +664,13 @@
     <visual name="pinky_mesh_2">
       <origin rpy="0 0 0" xyz="9.1241e-3 0 0"/>
       <geometry>
-        <mesh filename="ability_hand/meshes/visual/idx-F2.obj"/>
+        <mesh filename="../ability_hand/meshes/visual/idx-F2.obj"/>
       </geometry>
     </visual>
     <collision>                            <!-- pinky_L2 -->
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="ability_hand/meshes/collision/idx-F2_C.obj"/>
+        <mesh filename="../ability_hand/meshes/collision/idx-F2_C.obj"/>
       </geometry>
     </collision>
     <collision>
@@ -939,13 +939,13 @@
     <visual name="wrist_mesh">
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="ability_hand/meshes/visual/wristmesh.obj"/>
+        <mesh filename="../ability_hand/meshes/visual/wristmesh.obj"/>
       </geometry>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="ability_hand/meshes/collision/wristmesh_C.obj"/>
+        <mesh filename="../ability_hand/meshes/collision/wristmesh_C.obj"/>
       </geometry>
     </collision>
     <inertial>  <!-- the mass and inertia here are NOT correct -->
@@ -971,13 +971,13 @@
     <visual name="palm_mesh">
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="ability_hand/meshes/visual/FB_palm_ref_MIR.obj"/>
+        <mesh filename="../ability_hand/meshes/visual/FB_palm_ref_MIR.obj"/>
       </geometry>
     </visual>
     <collision>                                  <!-- thumb_base -->
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="ability_hand/meshes/collision/FB_palm_ref_MIR.obj"/>
+        <mesh filename="../ability_hand/meshes/collision/FB_palm_ref_MIR.obj"/>
       </geometry>
     </collision>
   </link>
@@ -990,13 +990,13 @@
     <visual name="thumb_mesh_1">
       <origin xyz=" 27.8283501e-3 1.7436510745838653e-19 14.7507e-3 " rpy=" 1.832595714594045 -0.0 5.366520605522463e-18 "/>
       <geometry>
-        <mesh filename="ability_hand/meshes/visual/thumb-F1-MIR.obj"/>
+        <mesh filename="../ability_hand/meshes/visual/thumb-F1-MIR.obj"/>
       </geometry>
     </visual>
     <collision>                            <!-- thumb_L1 -->
       <origin xyz="27.8283501e-3 1.7436510745838653e-19 14.7507e-3" rpy="1.832595714594045 -0.0 5.366520605522463e-18"/>
       <geometry>
-        <mesh filename="ability_hand/meshes/collision/thumb-F1-MIR_C.obj"/>
+        <mesh filename="../ability_hand/meshes/collision/thumb-F1-MIR_C.obj"/>
       </geometry>
     </collision>
   </link>
@@ -1009,13 +1009,13 @@
     <visual name="thumb_mesh_2">
       <origin xyz="65.18669e-3 23.34021e-3 3.93483e-3" rpy="-3.141592 0 0.343830"/>
       <geometry>
-        <mesh filename="ability_hand/meshes/visual/thumb-F2.obj"/>
+        <mesh filename="../ability_hand/meshes/visual/thumb-F2.obj"/>
       </geometry>
     </visual>
     <collision>                            <!-- thumb_L2 -->
       <origin xyz="65.18669e-3 23.34021e-3 3.93483e-3" rpy="-3.141592 0 0.343830"/>
       <geometry>
-        <mesh filename="ability_hand/meshes/collision/thumb-F2_C.obj"/>
+        <mesh filename="../ability_hand/meshes/collision/thumb-F2_C.obj"/>
       </geometry>
     </collision>
   </link>
@@ -1050,7 +1050,7 @@
     <visual name="index_mesh_1">
       <origin xyz="38.472723e-3 3.257695e-3 0.000000" rpy="0 0 0.084474"/>
       <geometry>
-        <mesh filename="ability_hand/meshes/visual/idx-F1.obj"/>
+        <mesh filename="../ability_hand/meshes/visual/idx-F1.obj"/>
       </geometry>
     </visual>
     <collision>                                  <!-- index_L1 -->
@@ -1093,13 +1093,13 @@
     <visual name="index_mesh_2">
       <origin rpy="0 0 0" xyz="9.1241e-3 0 0"/>
       <geometry>
-        <mesh filename="ability_hand/meshes/visual/idx-F2.obj"/>
+        <mesh filename="../ability_hand/meshes/visual/idx-F2.obj"/>
       </geometry>
     </visual>
     <collision>                            <!-- index_L2 -->
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="ability_hand/meshes/collision/idx-F2_C.obj"/>
+        <mesh filename="../ability_hand/meshes/collision/idx-F2_C.obj"/>
       </geometry>
     </collision>
     <collision>
@@ -1141,7 +1141,7 @@
     <visual name="middle_mesh_1">
       <origin xyz="38.472723e-3 3.257695e-3 0.000000" rpy="0 0 0.084474"/>
       <geometry>
-        <mesh filename="ability_hand/meshes/visual/idx-F1.obj"/>
+        <mesh filename="../ability_hand/meshes/visual/idx-F1.obj"/>
       </geometry>
     </visual>
     <collision>                                  <!-- middle_L1 -->
@@ -1184,13 +1184,13 @@
     <visual name="middle_mesh_2">
       <origin rpy="0 0 0" xyz="9.1241e-3 0 0"/>
       <geometry>
-        <mesh filename="ability_hand/meshes/visual/idx-F2.obj"/>
+        <mesh filename="../ability_hand/meshes/visual/idx-F2.obj"/>
       </geometry>
     </visual>
     <collision>                            <!-- middle_L2 -->
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="ability_hand/meshes/collision/idx-F2_C.obj"/>
+        <mesh filename="../ability_hand/meshes/collision/idx-F2_C.obj"/>
       </geometry>
     </collision>
     <collision>
@@ -1232,7 +1232,7 @@
     <visual name="ring_mesh_1">
       <origin xyz="38.472723e-3 3.257695e-3 0.000000" rpy="0 0 0.084474"/>
       <geometry>
-        <mesh filename="ability_hand/meshes/visual/idx-F1.obj"/>
+        <mesh filename="../ability_hand/meshes/visual/idx-F1.obj"/>
       </geometry>
     </visual>
     <collision>                                  <!-- ring_L1 -->
@@ -1275,13 +1275,13 @@
     <visual name="ring_mesh_2">
       <origin rpy="0 0 0" xyz="9.1241e-3 0 0"/>
       <geometry>
-        <mesh filename="ability_hand/meshes/visual/idx-F2.obj"/>
+        <mesh filename="../ability_hand/meshes/visual/idx-F2.obj"/>
       </geometry>
     </visual>
     <collision>                            <!-- ring_L2 -->
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="ability_hand/meshes/collision/idx-F2_C.obj"/>
+        <mesh filename="../ability_hand/meshes/collision/idx-F2_C.obj"/>
       </geometry>
     </collision>
     <collision>
@@ -1323,7 +1323,7 @@
     <visual name="pinky_mesh_1">
       <origin xyz="38.472723e-3 3.257695e-3 0.000000" rpy="0 0 0.084474"/>
       <geometry>
-        <mesh filename="ability_hand/meshes/visual/idx-F1.obj"/>
+        <mesh filename="../ability_hand/meshes/visual/idx-F1.obj"/>
       </geometry>
     </visual>
     <collision>                                  <!-- pinky_L1 -->
@@ -1366,13 +1366,13 @@
     <visual name="pinky_mesh_2">
       <origin rpy="0 0 0" xyz="9.1241e-3 0 0"/>
       <geometry>
-        <mesh filename="ability_hand/meshes/visual/idx-F2.glb"/>
+        <mesh filename="../ability_hand/meshes/visual/idx-F2.glb"/>
       </geometry>
     </visual>
     <collision>                            <!-- pinky_L2 -->
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="ability_hand/meshes/collision/idx-F2_C.obj"/>
+        <mesh filename="../ability_hand/meshes/collision/idx-F2_C.obj"/>
       </geometry>
     </collision>
     <collision>

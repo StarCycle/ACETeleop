@@ -1,5 +1,5 @@
 robot_cfg:
-  name: ur10e
+  name: ur10e_right
   urdf_path: ur10e/ur10e_with_gripper.urdf 
 
   dof_num: 7

@@ -1,5 +1,5 @@
 robot_cfg:
-  name: ur10e_hand
+  name: ur10e_hand_right
   urdf_path: ur10e/ur10e_with_right_dexrobot_hand.urdf 
 
   dof_num: 26

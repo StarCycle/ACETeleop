@@ -1,7 +1,7 @@
 robot_cfg:
-  name: h1_inspire_mirror
+  name: xarm_ability_right
 
-  is_ACE: true
+  is_ACE: True
 
   mode: normal
 
@@ -14,19 +14,19 @@ robot_cfg:
   pitch_limit: [-3, 3]
   yaw_limit: [-3, 3]
 
-  roll_offset: 20
+  roll_offset: 0
 
   right_wrist:
     right_wrist_init_rot: [0, 0, 0]
-    right_wrist_init_pos: [0.320, 0.1, 0.145]
-    right_center: [0.33, 0.05, 0.45]
-    right_radius: 0.5
+    right_wrist_init_pos: [0.2, 0.2, 0.5]
+    right_center: [0.2, 0.2, 0.5]
+    right_radius: 10000.0
 
   right_agent:
     dynamixel_cfg:
-      port: /dev/serial/by-id/usb-FTDI_USB__-__Serial_Converter_FT8ISG7I-if00-port0
+      port: /dev/serial/by-id/usb-FTDI_USB__-__Serial_Converter_FTA9DPE9-if00-port0
       urdf: right_arm/robot.urdf
       ee_link_name: ee_c
     hand_cfg:
-      cam_num: 2
+      cam_num: 1
       hand_type: Right

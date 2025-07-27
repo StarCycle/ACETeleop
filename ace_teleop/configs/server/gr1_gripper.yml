@@ -17,13 +17,13 @@ robot_cfg:
   roll_offset: 20
 
   left_wrist:
-    left_wrist_init_rot: [[ 0,  0, -1], [ 1,  0,  0], [ 0,  -1,  0]] 
+    left_wrist_init_rot: [0, 0, 0] 
     left_wrist_init_pos: [-0.2, 0.2, 0.0]
     left_center: [-0.2, 0.15, 0.2]
     left_radius: 0.23
 
   right_wrist:
-    right_wrist_init_rot: [[ 0,  0,  -1], [ -1,  0,  0], [ 0,  1,  0]]
+    right_wrist_init_rot: [0, 0, 0]
     right_wrist_init_pos: [0.2, 0.2, 0.0]
     right_center: [0.2, 0.15, 0.2]
     right_radius: 0.23

@@ -23,6 +23,7 @@ if __name__ == "__main__":
             "h1_inspire",
             "h1_inspire_mirror",
             "xarm_ability",
+            "xarm_ability_right",
             "xarm_ability_mirror",
             "single_test",
             'gr1_gripper',
@@ -30,8 +31,8 @@ if __name__ == "__main__":
             'franka_gripper',
             'franka_gripper_mirror',
             'single_demo',
-            'ur10e',
-            'ur10e_hand',
+            'ur10e_right',
+            'ur10e_hand_right',
         ],
         default="h1_inspire",
     )
