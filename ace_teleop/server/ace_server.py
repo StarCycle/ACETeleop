@@ -116,6 +116,7 @@ class ACEServer(Server):
         self.totaltime = 0
 
     def run(self) -> None:
+        latest_physical_wrist = {}
         joint_pos, frame, target_matrix, last_wrist = {}, {}, {}, {}
 
         while True:
@@ -137,6 +138,9 @@ class ACEServer(Server):
                     self.wrist[name], joint_pos[name], frame[name] = self.queue[
                         name
                     ].get()
+                    if latest_physical_wrist.get(name) is None:
+                        latest_physical_wrist[name] = np.identity(4)
+                    latest_physical_wrist[name][:3, :3] = self.wrist[name][:3, :3].copy()
                     target_matrix[name] = self.map_rot(name)
 
             if self.smooth_step < self.smooth:
@@ -178,17 +182,11 @@ class ACEServer(Server):
                     self.warming_step = 0
                     print("Initialization complete")
                 elif key == ord("r"):
-                    if not self.is_map_rot:
-                        for name in ["left", "right"]:
-                            if self.enable_agent[name]:
-                                self.wrist_init[name].init_rot = self.wrist[name][
-                                    :3, :3
-                                ].copy()
-                                print(f"START MAP ROT for {name} agent")
-                        self.is_map_rot = True
-                    else:
-                        self.is_map_rot = False
-                        print("STOP MAP ROT")
+                    for name in ["left", "right"]:
+                        if self.enable_agent[name]:
+                            self.wrist_init[name].init_rot = latest_physical_wrist[name][:3, :3].copy()
+                            print(f"START MAP ROT for {name} agent")
+                    self.is_map_rot = True
                     self.smooth_step = 0
 
                 elif key == ord("p"):
