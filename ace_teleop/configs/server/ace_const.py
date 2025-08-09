@@ -18,11 +18,6 @@ MIRROR = np.array(
 YUP2ZUP_INV = np.transpose(YUP2ZUP, (0, 2, 1))
 YUP2ZUP_INV_2D = YUP2ZUP_INV.reshape(4, 4)
 
-# vision pro index
-indices1 = [1, 2, 3, 4, 6, 7, 8, 9, 11, 12, 13, 14, 16, 17, 18, 19, 21, 22, 23, 24]
-# mediapipe index
-indices2 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
-
 default_keypoint = np.array([0, 0, 0])
 
 R_x_90_ccw_rot = np.array(

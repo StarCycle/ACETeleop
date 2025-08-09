@@ -18,7 +18,7 @@ robot_cfg:
   left_ee_indices: [13]
   right_ee_indices: [21]
 
-  human_hand_indices: [4, 9]
+  human_hand_indices: [4, 8]
   hand_low_pass_alpha: 0.8
   wrist_low_pass_alpha: 0.5
 

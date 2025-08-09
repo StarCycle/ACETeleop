@@ -19,7 +19,7 @@ robot_cfg:
   hand_indices: [2, 3, 4, 5, 8, 9, 6, 7, 0, 1]
 
   # for human input data
-  human_hand_indices: [4, 9, 14, 19, 24]
+  human_hand_indices: [4, 8, 12, 16, 20]
   hand_low_pass_alpha: 0.8
   wrist_low_pass_alpha: 0.5
 

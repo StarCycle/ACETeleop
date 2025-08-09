@@ -331,14 +331,10 @@ class ACEServer(Server):
 
                         if joint_pos[name] is not None:
                             if self.mode == "mirror":
-                                self.servicer.points_right[indices1] = (
-                                    np.array([1, 1, -1]) * joint_pos[name][indices2]
-                                )
+                                self.servicer.points_right = (np.array([1, 1, -1]) * joint_pos[name])
                                 self.servicer.points_right[0] = [0, 0, 0]
                             else:
-                                self.servicer.points_left[indices1] = joint_pos[name][
-                                    indices2
-                                ]
+                                self.servicer.points_left = joint_pos
                                 self.servicer.points_left[0] = [0, 0, 0]  # for point 0
 
                     elif name == "right":
@@ -349,14 +345,10 @@ class ACEServer(Server):
 
                         if joint_pos[name] is not None:
                             if self.mode == "mirror":
-                                self.servicer.points_left[indices1] = (
-                                    np.array([1, 1, -1]) * joint_pos[name][indices2]
-                                )
+                                self.servicer.points_left = (np.array([1, 1, -1]) * joint_pos[name])
                                 self.servicer.points_left[0] = [0, 0, 0]
                             else:
-                                self.servicer.points_right[indices1] = joint_pos[name][
-                                    indices2
-                                ]
+                                self.servicer.points_right = joint_pos[name]
                                 self.servicer.points_right[0] = [0, 0, 0]  # for point 0
 
                     if self.debug:
