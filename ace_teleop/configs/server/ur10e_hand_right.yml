@@ -5,7 +5,7 @@ robot_cfg:  # Configuration for the robot setup
 
   mode: normal  # Operation mode: "normal" for standard teleoperation (or "mirror" for mirrored mode)
 
-  pos_scale: 2.0
+  pos_scale: 1.0
   roll_scale: 1.0
   pitch_scale: 1.0
   yaw_scale: 1.0

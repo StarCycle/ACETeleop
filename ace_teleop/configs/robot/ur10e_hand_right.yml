@@ -12,7 +12,7 @@ robot_cfg:
   right_ee_indices: [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25]
 
   hand_indices: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
-  human_hand_indices: [4, 8, 12, 16, 20]
+  human_hand_indices: []
   hand_low_pass_alpha: 0.8
   wrist_low_pass_alpha: 0.5
 
@@ -24,19 +24,5 @@ robot_cfg:
 
   ee:  # Configuration for end-effector
     right_ee:  # Right end-effector settings
-      type: vector
-      urdf_path: dexrobot_hand/dexhand021_right_simplified.urdf
-      wrist_link_name: "right_hand_base"
-
-      # Target refers to the retargeting target, which is the robot hand
-      target_joint_names: null # Set it to null so that the target_joint_names are automatically inferred from the urdf (all active joints)
-      target_origin_link_names: [ "right_hand_base", "right_hand_base", "right_hand_base", "right_hand_base", "right_hand_base" ] # Starting point of vector
-      target_task_link_names: [ "r_f_link1_tip", "r_f_link2_tip", "r_f_link3_tip", "r_f_link4_tip", "r_f_link4_tip" ] # End point of vector
-      scaling_factor: 1.25 # Size ratio between the inspire hand and the human hand
-
-      # Source refers to the retargeting input, which usually corresponds to the human hand
-      # The joint indices of human hand joint which corresponds to each link in the target_link_names
-      target_link_human_indices: [ [ 0, 0, 0, 0, 0 ], [ 4, 9, 14, 19, 24 ] ] # Vision Pro id of starting points and end points of vectors
-
-      # A smaller alpha means stronger filtering, i.e. more smooth but also larger latency
+      ckpt_tag: geort_dexhand
       low_pass_alpha: 0.5

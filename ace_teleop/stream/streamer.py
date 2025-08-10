@@ -15,8 +15,8 @@ class HandTrackingServicer(handtracking_pb2_grpc.HandTrackingServiceServicer):
         self.matrix_left = np.eye(4, 4)
         self.matrix_right = np.eye(4, 4)
 
-        self.points_left = np.tile(np.ones(3), (25, 1))
-        self.points_right = np.tile(np.ones(3), (25, 1))
+        self.points_left = np.tile(np.zeros(3), (21, 1))
+        self.points_right = np.tile(np.zeros(3), (21, 1))
 
         self.time = time.perf_counter()
 

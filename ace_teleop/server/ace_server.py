@@ -117,7 +117,7 @@ class ACEServer(Server):
 
     def run(self) -> None:
         latest_physical_wrist = {}
-        joint_pos, frame, target_matrix, last_wrist = {}, {}, {}, {}
+        joint_pos, target_matrix, last_wrist = {}, {}, {}
 
         while True:
             if self.print_freq:
@@ -135,7 +135,7 @@ class ACEServer(Server):
 
             for name in ["left", "right"]:
                 if self.enable_agent[name]:
-                    self.wrist[name], joint_pos[name], frame[name] = self.queue[
+                    self.wrist[name], joint_pos[name] = self.queue[
                         name
                     ].get()
                     if latest_physical_wrist.get(name) is None:
@@ -330,12 +330,7 @@ class ACEServer(Server):
                             self.servicer.matrix_left = self.wrist[name]
 
                         if joint_pos[name] is not None:
-                            if self.mode == "mirror":
-                                self.servicer.points_right = (np.array([1, 1, -1]) * joint_pos[name])
-                                self.servicer.points_right[0] = [0, 0, 0]
-                            else:
-                                self.servicer.points_left = joint_pos
-                                self.servicer.points_left[0] = [0, 0, 0]  # for point 0
+                            self.servicer.points_left = joint_pos[name]
 
                     elif name == "right":
                         if self.mode == "mirror":
@@ -344,15 +339,7 @@ class ACEServer(Server):
                             self.servicer.matrix_right = self.wrist[name]
 
                         if joint_pos[name] is not None:
-                            if self.mode == "mirror":
-                                self.servicer.points_left = (np.array([1, 1, -1]) * joint_pos[name])
-                                self.servicer.points_left[0] = [0, 0, 0]
-                            else:
-                                self.servicer.points_right = joint_pos[name]
-                                self.servicer.points_right[0] = [0, 0, 0]  # for point 0
-
-                    if self.debug:
-                        cv2.imshow(f"Webcam {name}", frame[name])
+                            self.servicer.points_right = joint_pos[name]
 
             if self.enable_agent["left"] and self.enable_agent["right"]:
                 if (

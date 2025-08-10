@@ -6,7 +6,7 @@ from pytransform3d.rotations import quaternion_from_matrix, matrix_from_quaterni
 import ace_teleop
 from ace_teleop.control.motion_control import PinocchioMotionControl
 from ace_teleop.control.filters import LPFilter, LPRotationFilter
-from dex_retargeting.retargeting_config import RetargetingConfig
+from geort import load_model
 
 def wrist_filters(
     wrist_mat: np.ndarray, pos_filter: LPFilter, rot_filter: LPRotationFilter
@@ -48,7 +48,6 @@ class ACEController:
         
         self._init_indices()
         self._init_controllers()
-
         self._init_filters()
 
     def _init_indices(self) -> None:
@@ -83,7 +82,6 @@ class ACEController:
             )
 
         if self.ee_type == "hand":
-            self.hand_indices = self.cfg["hand_indices"]
             self._init_hand_controllers()
         elif self.ee_type == "gripper":
             self._init_gripper()
@@ -104,17 +102,11 @@ class ACEController:
             self.right_fingertip_pos_filter = LPFilter(ee_alpha)
 
     def _init_hand_controllers(self) -> None:
-        ee_config = self.cfg["ee"]
-
-        RetargetingConfig.set_default_urdf_dir(self.default_urdf_dir)
-
         if self.enable_agent["left"]:
-            left_config = RetargetingConfig.from_dict(ee_config["left_ee"])
-            self.left_retargeting = left_config.build()
+            self.left_retargeting = load_model(tag=self.cfg["ee"]["left_ee"]["ckpt_tag"])
 
         if self.enable_agent["right"]:
-            right_config = RetargetingConfig.from_dict(ee_config["right_ee"])
-            self.right_retargeting = right_config.build()
+            self.right_retargeting = load_model(tag=self.cfg["ee"]["right_ee"]["ckpt_tag"])
 
     def _init_gripper(self) -> None:
         ee_config = self.cfg["ee"]
@@ -143,9 +135,7 @@ class ACEController:
             )
             left_fingertip_pos = self.left_fingertip_pos_filter.next(left_fingertip_pos)
             if self.ee_type == "hand":
-                left_ee_qpos = self.left_retargeting.retarget(
-                    left_fingertip_pos[self.human_hand_indices]
-                )[self.hand_indices]
+                left_ee_qpos = self.left_retargeting.forward(left_fingertip_pos)
             elif self.ee_type == "gripper":
                 left_ee_qpos = categorize_and_map_value(
                     left_fingertip_pos[self.human_hand_indices], self.left_gripper_range
@@ -164,9 +154,7 @@ class ACEController:
             )
             right_fingertip_pos = self.right_fingertip_pos_filter.next(right_fingertip_pos)
             if self.ee_type == "hand":
-                right_ee_qpos = self.right_retargeting.retarget(
-                    right_fingertip_pos[self.human_hand_indices]
-                )[self.hand_indices]
+                right_ee_qpos = self.right_retargeting.forward(right_fingertip_pos)
             elif self.ee_type == "gripper":
                 right_ee_qpos = categorize_and_map_value(
                     right_fingertip_pos[self.human_hand_indices], self.right_gripper_range

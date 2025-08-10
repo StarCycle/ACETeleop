@@ -69,8 +69,6 @@ class Server:
         self.server.start()
 
         self.servicer.head = np.dot(YUP2ZUP_INV_2D, HEAD)
-        self.servicer.points_right[:] = default_keypoint
-        self.servicer.points_left[:] = default_keypoint
         self.servicer.matrix_right = np.eye(4)
         self.servicer.matrix_left = np.eye(4)
 

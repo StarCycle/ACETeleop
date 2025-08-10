@@ -18,8 +18,6 @@ MIRROR = np.array(
 YUP2ZUP_INV = np.transpose(YUP2ZUP, (0, 2, 1))
 YUP2ZUP_INV_2D = YUP2ZUP_INV.reshape(4, 4)
 
-default_keypoint = np.array([0, 0, 0])
-
 R_x_90_ccw_rot = np.array(
     [
         [1, 0, 0],
